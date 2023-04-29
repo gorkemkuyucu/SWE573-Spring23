@@ -1,0 +1,10 @@
+<h3>Sign Up</h3>
+
+<form method="POST" action="">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" name="Create User" label="Send">
+
+</form>
+
+<p><button type="submit">I have a verification code</button></p>

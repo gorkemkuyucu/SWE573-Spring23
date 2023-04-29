@@ -1,0 +1,17 @@
+
+
+.env
+venv/
+
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+First story is from Gülfer Kuyucu Meriç about Koç University and area around it.docx
+GDAL-3.4.3-cp310-cp310-win_amd64.whl
+
+
+# Still developing
+static/
+story/
+media/

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<body>
+    <h1> Profiles</h1>
+<br/>
+
+{% if profiles %}
+    {% for profile in profiles %}
+        Username: {{ profile.user.username }} <br/>
+        Link: @{{ profile.user.username|lower }}
+        <br/><br/>
+    {% endfor %}
+
+{% endif %}
+
+</body>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+<h1> Profiles</h1>
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="profile-info">
+          <h3>@{{ profile.user.username }}</h3>
+          <p>Stories liked: {{ profile.user.like_story.count }}</p>
+          <p>Followers: {{ profile.followed_by.count }}</p>
+          <p>Following: {{ profile.follows.count }}</p>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <!-- Display the user's stories -->
+      </div>
+    </div>
+  </div>
+{% endblock %}
