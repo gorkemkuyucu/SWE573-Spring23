@@ -42,10 +42,13 @@
             {% if user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'write_story' %}">Write Story</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'logout' %}">Sign Out</a>
-                </li>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile' request.user.id %}">My Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Sign Out</a>
+              </li>
             {% else %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'signUpPage' %}">Sign Up</a>
@@ -69,6 +72,7 @@
           <div class="alert alert-warning alert-dismissible fade show" role="alert">
           {{ message }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
         {% endfor %}
       {% endif %}
     </div>
@@ -79,8 +83,44 @@
       </div>
     </main>
 
-    <footer>
+    <footer class="text-center text-lg-start bg-white text-muted">
       {% block footer %}{% endblock %}
+      <!-- Section: Links  -->
+      <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom"></section>
+        <!-- Grid column -->
+          <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-1">
+            <br/>
+            <!-- Links -->
+            <p>
+              <a href="{% url 'home' %}" class="text-reset">Home Page</a>
+            </p>
+            <p>
+              <a href="{% url 'signUpPage' %}" class="text-reset">Sign Up Page</a>
+            </p>
+            <p>
+              <a href="{% url 'signInPage' %}" class="text-reset">Sign In Page</a>
+            </p>
+            <p>
+              <a href="{% url 'profiles' %}" class="text-reset">Member Profiles</a>
+            </p>
+            <p>
+              <a href="{% url 'story_list' %}" class="text-reset">Story List</a>
+            </p>
+            <p>
+              <a href="{% url 'write_story' %}" class="text-reset">Write a Story</a>
+            </p>
+          </div>
+        <!-- Grid column -->
+      
+      <!-- Section: Links  -->
+
+      <!-- Copyright -->
+      <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.025);">
+        © 2023 Copyright:
+        <a class="text-reset fw-bold" href="https://github.com/gorkemkuyucu/SWE573-Spring23">https://github.com/gorkemkuyucu/SWE573-Spring23</a>
+      </div>
+      <!-- Copyright -->
+
     </footer>
 
   </body>
