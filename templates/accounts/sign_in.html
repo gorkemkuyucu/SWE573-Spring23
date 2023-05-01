@@ -1,6 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <h3>Sign In</h3>
-
-
   <form method="POST">
     {% csrf_token %}
     <div>
@@ -16,5 +17,5 @@
     </div>
   </form>
 
-  <img src="img/once_upon_logo.png" alt="logo"><img/>
+  {% endblock %}
 

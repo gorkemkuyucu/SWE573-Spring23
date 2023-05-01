@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from .forms import SignUpForm
 from .models import Profile
+from django.contrib import messages
 
 # Create your views here.
 
@@ -40,9 +41,9 @@ def signInPage(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return HttpResponse("Sign in succesful!")
+            return redirect('home')
         else:
-            return HttpResponse("Username or password does not exist or correct!")
+            messages.info(request, f'Username or password does not exist or match!')
     else:
         return render(request, 'accounts/sign_in.html', context)
     
@@ -52,13 +53,14 @@ def profile_list(request):
         profiles = Profile.objects.exclude(user=request.user)
         return render(request,'accounts/profiles.html', {"profiles":profiles})
     else:
-        return redirect('home.html')
+        return redirect('home')
 
 def profile(request, pk):
     if request.user.is_authenticated:
         profile = Profile.objects.get(user_id=pk)
         return render(request, "accounts/profile.html", {"profile":profile})
     else:
-        return HttpResponse("You are not logged in")
+        messages.error(request, "You are not logged in!")
+        return redirect('signInPage')
 
 
