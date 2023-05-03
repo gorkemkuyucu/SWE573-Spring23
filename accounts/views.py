@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from .forms import SignUpForm
 from .models import Profile
 from django.contrib import messages
+from story.models import Story
 
 # Create your views here.
 
@@ -53,12 +54,24 @@ def profile_list(request):
         profiles = Profile.objects.exclude(user=request.user)
         return render(request,'accounts/profiles.html', {"profiles":profiles})
     else:
+        messages.success(request, f'You must be signed in to view member profiles!')
         return redirect('home')
 
 def profile(request, pk):
     if request.user.is_authenticated:
         profile = Profile.objects.get(user_id=pk)
-        return render(request, "accounts/profile.html", {"profile":profile})
+        stories = Story.objects.filter(owner=profile.user)
+
+        if request.method == "POST":
+            current_user = request.user.profile
+            if request.POST['follow'] == "follow":
+                current_user.follows.add(profile)
+            else:
+                current_user.follows.remove(profile)
+            current_user.save()
+
+        context = {'profile': profile, 'stories': stories}
+        return render(request, "accounts/profile.html", context)
     else:
         messages.error(request, "You are not logged in!")
         return redirect('signInPage')

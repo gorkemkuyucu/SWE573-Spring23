@@ -10,7 +10,7 @@ admin.site.unregister(Group)
 class ProfileInLine(admin.StackedInline):
     model = Profile
 
-#Change user model to show wanted fields (imports from modeladmin)
+#Change user model to show wanted fields (imports from modeladmin) + add profile inline with admin user page
 class UserAdmin(admin.ModelAdmin):
     model = User
     fields = ["username","first_name", "last_name", "email","date_joined"]
