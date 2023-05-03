@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h2>{{ story.title }}</h2>
+    <h3>by <a href="{% url 'profile' story.owner.id %}">@{{ story.owner.username|lower }}</a></h3>
+    <div id="map" style="height: 200px;"><a href="https://www.maptiler.com" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a></div>
+    <p>{{ story.body }}</p>
+    
+    <!--
+    {% if request.user != story.owner %}
+        <button id="like-button">Like</button>
+    {% endif %}
+
+    <div id="comments">
+        <h3>Comments</h3>
+        Display comments here
+    </div>
+    -->
+
+
+    {% block scripts %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
+
+        <script>
+            const key = 'rbrQycsoiHDtV1Knh3g8';
+            var latitude = 41.085137428988375;
+            var longitude = 29.04444515705109; //setting Booğaziçi University as default point
+
+            var map = L.map('map').setView([latitude, longitude], 13);
+            
+            L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
+                tileSize: 512,
+                zoomOffset: -1,
+                maxZoom: 18,
+                minZoom: 1,
+                attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
+                crossOrigin: true
+            }).addTo(map);
+
+            var customIcon = L.icon({
+                iconUrl: 'http://leafletjs.com/examples/custom-icons/leaf-green.png',
+                shadowUrl: 'http://leafletjs.com/examples/custom-icons/leaf-shadow.png',
+                iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+            });
+
+            // Creating array for locations
+            var storyLocations = [
+                {% for location in locations %}
+                    {
+                        lat: {{ location.geolocation_lat }},
+                        lon: {{ location.geolocation_lon }}
+                    },
+                {% endfor %}
+            ];
+
+            // Setting the map focusing on the first location if available, otherwise use to default (Boğaziçi)
+            if (storyLocations.length > 0) {
+                map.setView([storyLocations[0].lat, storyLocations[0].lon], 13);
+            } else {
+                map.setView([latitude, longitude], 13);
+            }
+
+            // Adding locations to the map
+            for (var i = 0; i < storyLocations.length; i++) {
+                L.marker([storyLocations[i].lat, storyLocations[i].lon], {icon: customIcon}).addTo(map);
+            }
+        </script>
+    {% endblock %}
+
+{% endblock %}
