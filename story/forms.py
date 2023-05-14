@@ -7,8 +7,12 @@ class WriteStoryForm(forms.ModelForm):
     start_date = forms.DateField(required=True, widget=forms.widgets.DateInput(attrs={"type":"date"}), label= "In between")
     end_date = forms.DateField(required=True, widget=forms.widgets.DateInput(attrs={"type":"date"}), label= "and")
 
-
-
     class Meta:
         model = Story
         exclude = ("owner", "is_reported", "likes", "geolocations" )
+
+
+class EditStoryForm(forms.ModelForm):
+    class Meta:
+        model = Story
+        fields = ['title', 'start_date', 'end_date', 'geolocations']

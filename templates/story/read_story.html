@@ -2,16 +2,29 @@
 {% load static %}
 
 {% block content %}
-    <h2>{{ story.title }}</h2>
+    <div class="col-8">
+        <h2>{{ story.title }}</h2>
+    </div>
+    <div class="col-4">
+    {% if request.user != story.owner %}
+    <button class="btn btn-outline-primary btn-sm float-right" id="like-button"><a href="{% url 'like_story' story.id %}">
+        {% if user in story.likes.all %}
+            Unlike
+        {% else %}
+            Like
+        {% endif %}
+    </a></button>
+    {% endif %}
+    <p>{{ story.likes.count }} likes</p><br/>
+    </div>
     <h3>by <a href="{% url 'profile' story.owner.id %}">@{{ story.owner.username|lower }}</a></h3>
     <div id="map" style="height: 200px;"><a href="https://www.maptiler.com" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a></div>
     <p>{{ story.body }}</p>
     
-    <!--
-    {% if request.user != story.owner %}
-        <button id="like-button">Like</button>
-    {% endif %}
 
+
+
+    <!--
     <div id="comments">
         <h3>Comments</h3>
         Display comments here
