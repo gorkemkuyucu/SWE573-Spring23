@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <body>
@@ -7,9 +8,22 @@
 
 {% if profiles %}
     {% for profile in profiles %}
-        Username: {{ profile.user.username }} <br/>
-        Link: @{{ profile.user.username|lower }}
-        <br/><br/>
+
+    <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="{{ profile.profile_picture.url }}" alt="Profile picture" class="rounded-circle" style="max-width: 150px; height: 150px;">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">Name Surname: {{ profile.user.first_name }} {{ profile.user.last_name }}</h5>
+              <p class="card-text"><a href="{% url 'profile' profile.user.id %}">@{{ profile.user.username|lower }}</a></p>
+              <p class="card-text"><small class="text-muted">Published stories: {{ profile.number_of_published_stories }}</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     {% endfor %}
 
 {% endif %}

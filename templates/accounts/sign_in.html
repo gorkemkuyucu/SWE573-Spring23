@@ -4,18 +4,20 @@
 <h3>Sign In</h3>
   <form method="POST">
     {% csrf_token %}
-    <div>
-      <label for="username">Username:</label>
-      <input type="text" name="username" id="username">
+    <div class="col-md-6 offset-md-3">
+      <label for="username" class="form-label">Username:</label>
+      <input type="text" class="form-control" name="username" id="username">
     </div>
-    <div>
-      <label for="password">Password:</label>
-      <input type="password" name="password" id="password">
+    <div class="col-md-6 offset-md-3">
+      <label for="password" class="form-label">Password:</label>
+      <input type="password" class="form-control" name="password" id="password">
     </div>
-    <div>
+    <br/>
+    <div class="col-md-6 offset-md-3">
       <input type="submit" value="Sign in">
     </div>
   </form>
+
 
   {% endblock %}
 

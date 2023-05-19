@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>Sign Up</h3>
+<div class="col-md-8 offset-md-2">
+<h3>Sign Up</h3> 
 
 <form method="POST" action="">
     {% csrf_token %}
@@ -9,5 +10,6 @@
     <input type="submit" name="Create User" label="Send">
 
 </form>
+</div>
 <!--<p><button type="submit">I have a verification code</button></p>-->
 {% endblock %}

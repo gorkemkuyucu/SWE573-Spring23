@@ -1,20 +1,92 @@
 {% extends 'base.html' %}
+{% load static %}
 
-<h1> Profiles</h1>
+
+<h1>Profiles</h1>
 {% block content %}
+{% if profile %}
   <div class="container">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-8">
         <div class="profile-info">
+
+          <img src="{{ profile.profile_picture.url }}" alt="Profile picture" class="rounded-circle" style="max-width: 150px; height: 150px;">
           <h3>@{{ profile.user.username }}</h3>
+          <h4>Name Surname: {{ profile.user.first_name }} {{ profile.user.last_name }}</h4>
           <p>Stories liked: {{ profile.user.like_story.count }}</p>
-          <p>Followers: {{ profile.followed_by.count }}</p>
-          <p>Following: {{ profile.follows.count }}</p>
+          <div class="card">
+            <h5 class="card-header">About Me:</h5>
+            <div class="card-body">
+              <p class="card-text">{{ profile.about_me|default:"I'm new here!" }}</p>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col-md-8">
-        <!-- Display the user's stories -->
+      <div class="col-md-3">
+        <center>
+        {% if user == profile.user %}
+          <a href="{% url 'update_profile' profile.user.id %}" class="btn btn-outline-primary">Update Profile</a>
+          <br/><br/>
+        {% else %}
+          <form method=POST>
+            {% csrf_token %}
+            {% if profile in user.profile.follows.all %}
+              <button class="btn btn-outline-secondary" name="follow" value="unfollow" type="submit">Unfollow</button>
+            {% else %}
+              <button class="btn btn-outline-primary" name="follow" value="follow" type="submit">Follow</button>
+            {% endif %}
+          </form>
+          <br/>
+        {% endif %}
+        </center>
+        <div class="card text-center">
+          <div class="card-header">
+            <strong>Followers:</strong> {{ profile.followed_by.count }}
+          </div>
+          <div class="card-body">
+            <p class="card-text">{% for following in profile.followed_by.all %}
+              <a href="{% url 'profile' following.user.id %}">@{{ following }}</a><br/>
+            {% endfor %}
+            </p>
+          </div>
+        </div>
+        <br/>
+        <div class="card text-center">
+          <div class="card-header">
+            <strong>Following:</strong> {{ profile.follows.count }}
+          </div>
+          <div class="card-body">
+            <p class="card-text">{% for following in profile.follows.all %}
+              <a href="{% url 'profile' following.user.id %}">@{{ following }}</a><br/>
+            {% endfor %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br/>
+    
+    <div class="card">
+      <h5 class="card-header">My Stories</h5>
+      <div class="card-body">
+          {% for story in stories %}
+            {% if story.owner.id == profile.user.id %} 
+              <div class="card mb-3">
+                <div class="card-body">
+                  <h5 class="card-title"><a href="{% url 'read_story' story.id %}">{{ story.title }}</a></h5>
+                  <p class="card-text"><small>In between {{ story.start_date.day }}.{{ story.start_date.month }}.{{ story.start_date.year }} and {{ story.end_date.day }}.{{ story.end_date.month }}.{{ story.end_date.year }}</samll></p>
+                  <p class="card-text"><small class="text-muted"> Published on {{ story.created_date.day }}.{{ story.created_date.month }}.{{ story.created_date.year }}</small></p>
+                  {% if user == profile.user %}
+                    <button class="btn btn-outline-primary float-right">
+                      <a href="{% url 'edit_story' story.id %}" style="text-decoration: none; color: inherit;">Edit Story</a>
+                    </button>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
       </div>
     </div>
   </div>
+{% endif %}
 {% endblock %}
