@@ -14,10 +14,16 @@ class Profile(models.Model):
     user= models.OneToOneField(User, on_delete=models.CASCADE)
     follows = models.ManyToManyField("self", related_name="followed_by", symmetrical=False, blank=True)
     about_me = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', default='profile_pictures/Default_profile_picture.svg')
+    profile_picture = models.ImageField(upload_to='profile_pictures/', default='profile_pictures/Default_profile_picture.png')
     
     def __str__ (self):
         return self.user.username
+    
+    def number_of_published_stories(self):
+        return self.user.Stories.filter(
+        #is_draft=False
+        ).count()
+
 
 @receiver(post_save, sender=User)
 
@@ -27,7 +33,7 @@ def create_profile(sender, instance, created, **kwargs):
         user_profile = Profile(user=instance)
         user_profile.save()
         # making user to follow themselves
-        user_profile.follows.set([instance.profile.id])
-        user_profile.save()
+        #user_profile.follows.set([instance.profile.id])
+        #user_profile.save()
 
 

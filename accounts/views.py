@@ -1,8 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import authenticate, login
-from .forms import SignUpForm
+from django.contrib.auth import authenticate, login, update_session_auth_hash
+from .forms import SignUpForm, UpdateProfileForm, ChangePasswordForm
 from .models import Profile
 from django.contrib import messages
 from story.models import Story
@@ -45,6 +45,7 @@ def signInPage(request):
             return redirect('home')
         else:
             messages.info(request, f'Username or password does not exist or match!')
+            return redirect('signInPage')
     else:
         return render(request, 'accounts/sign_in.html', context)
     
@@ -76,4 +77,39 @@ def profile(request, pk):
         messages.error(request, "You are not logged in!")
         return redirect('signInPage')
 
+def update_profile(request, pk):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user_id=pk)
+        
+        if request.user != profile.user:
+            messages.error(request, "You cannot edit someone else's profile!")
+            return redirect('profile', pk=pk)
+
+        if request.method == "POST":
+            form = UpdateProfileForm(request.POST, request.FILES, instance=profile)
+            password_form = ChangePasswordForm(request.user, request.POST)
+            if form.is_valid():
+                user = profile.user
+#                user.email = form.cleaned_data['email']
+                user.save()
+                form.save()
+                messages.success(request, "Profile updated successfully!")
+                return redirect('profile', pk=pk)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)  # Important, to update the session with the new password
+                messages.success(request, "Password changed successfully!")
+                return redirect('profile', pk=pk)
+            else:
+                messages.error(request, "Error changing password. Please try again.")
+
+        else:
+            form = UpdateProfileForm(instance=profile)
+            password_form = ChangePasswordForm(request.user)
+
+        context = {'form': form, 'password_form': password_form, 'profile': profile}
+        return render(request, 'accounts/update_profile.html', context)
+    else:
+        messages.error(request, "You are not logged in!")
+        return redirect('signInPage')
 
