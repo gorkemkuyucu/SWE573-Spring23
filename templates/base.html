@@ -21,13 +21,13 @@
             <img src="{% static 'images/once_upon_logo.png' %}" alt="Once Upon A Time Logo" border="0" height="120"></a>
           <ul class="navbar-nav mr-auto ml-auto">
             <li class="nav-item">
-                <form class="form-inline">
+                <form class="form-inline" action="{% url 'basic_search' %}" method="get">
                   <div class="input-group">
-                    <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                    <input class="form-control" type="search" name="query" placeholder="Search" aria-label="Search">
                     <div class="input-group-append"></div>
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     <li class="nav-item">
-                      <a class="btn btn-outline-info my-2 my-sm-0" href="#">Adv. Search</a>
+                      <a class="btn btn-outline-info my-2 my-sm-0" href="{% url 'advanced_search' %}">Adv. Search</a>
                     </li>
                   </div>
                 </form>

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Search results for "{{ query }}"</h2>
+
+    {% if stories %}
+        <ul>
+        {% for story in stories %}
+            <li>
+                <div class="card border-secondary mb-3" >
+                    <div class="card-header"><h3><a href="{% url 'read_story' story.id %}">{{ story.title }}</a></h3></div>
+                    <div class="card-body text-secondary">
+                        <h5 class="card-title"><p>By: <a href="{% url 'profile' story.owner.profile.user.id %}">{{ story.owner.username }}</a></p></h5>
+                        <p class="card-text">{{ story.body|truncatechars:100 }}</p>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+{% endblock %}
