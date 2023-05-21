@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from taggit.managers import TaggableManager
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 
@@ -10,22 +12,22 @@ class Location(models.Model):
     story = models.ForeignKey('Story', related_name="locations", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.story
+        return str(self.story)
 
 #Creating story model
 class Story(models.Model):
     owner = models.ForeignKey(User, related_name="Stories", null=True, on_delete=models.SET_NULL)
     title = models.CharField(max_length=255)
-    body = models.CharField(max_length=5000)
+    body = RichTextField(blank=True, null=True)
     geolocations = models.ManyToManyField(Location, related_name="story_locations")
     created_date = models.DateTimeField(auto_now_add=True)
     start_date = models.DateTimeField(null=True, blank=True, default=None)
     end_date = models.DateTimeField(null=True, blank=True, default=None)
     is_draft = models.BooleanField(default=True)
     is_reported = models.BooleanField(default=False)
-    likes= models.ManyToManyField(User, related_name="like_story", blank=True)
+    likes = models.ManyToManyField(User, related_name="like_story", blank=True)
     #reported_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='reported_stories')
-    #tags = models.ManyToManyField('Tag')
+    tags = TaggableManager('Tag', blank=True)
 
     # Count likes
     def number_of_likes(self):
@@ -42,3 +44,12 @@ class Story(models.Model):
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     story = models.ForeignKey(Story, on_delete=models.CASCADE)
+
+class Comment(models.Model):
+    story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField(max_length=2000)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text

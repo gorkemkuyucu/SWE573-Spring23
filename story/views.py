@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from.models import Story, Location
-from.forms import WriteStoryForm, EditStoryForm
+from .models import Story, Location, Comment
+from accounts.models import Profile
+from .forms import WriteStoryForm, EditStoryForm, CommentForm
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -20,6 +21,10 @@ def write_story(request):
             story = story_form.save(commit=False)
             story.owner = request.user
             story.save()
+
+            #Adding tags
+            for tag in request.POST.get('tags', '').split(','):
+                story.tags.add(tag)
 
             # Process the story_locations input
             story_locations = request.POST.get('story_locations', '')
@@ -45,7 +50,25 @@ def write_story(request):
 def read_story(request, story_id):
     story = get_object_or_404(Story, pk=story_id)
     locations = story.geolocations.all()
-    return render(request, 'story/read_story.html', {'story': story, 'locations': locations})
+    profile = Profile.objects.all()
+    new_comment = None
+
+    # Comment posted
+    if request.method == 'POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+
+            # Create Comment object but don't save to database yet
+            new_comment = comment_form.save(commit=False)
+            # Assign the current post to the comment
+            new_comment.story = story
+            new_comment.author = request.user
+            # Save the comment to the database
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
+
+    return render(request, 'story/read_story.html', {'story': story, 'locations': locations, 'comment_form': comment_form, 'profile':profile})
 
 @login_required
 def edit_story(request, story_id):
