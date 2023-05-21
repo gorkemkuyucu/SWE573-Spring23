@@ -21,7 +21,7 @@ load_dotenv()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal306'
 GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
-
+CKEDITOR_UPLOAD_PATH = "media/uploads/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -46,9 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'django.contrib.postgres',
     'accounts',
     'story',
     'search',
+    'taggit',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
