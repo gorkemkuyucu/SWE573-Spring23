@@ -11,6 +11,10 @@
                 <div class="card mb-3">
                     <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'read_story' story.id %}">{{ story.title }}</a></h5>
+                    Tags:
+                    {% for tag in story.tags.all %}
+                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
                     <p class="card-text">In between {{ story.start_date.day }}/{{ story.start_date.month }}/{{ story.start_date.year }} and {{ story.end_date.day }}/{{ story.end_date.month }}/{{ story.end_date.year }}</p>
                     <p class="card-text"><small class="text-muted"> Created at {{ story.created_date.day }}/{{ story.created_date.month }}/{{ story.created_date.year }}</small></p>
                     </div>

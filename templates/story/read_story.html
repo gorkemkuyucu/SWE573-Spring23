@@ -15,21 +15,57 @@
         {% endif %}
     </a></button>
     {% endif %}
-    <p>{{ story.likes.count }} likes</p><br/>
+    <p>{{ story.likes.count }} likes</p>
+    Tags:
+    {% for tag in story.tags.all %}
+        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
     </div>
-    <h3>by <a href="{% url 'profile' story.owner.id %}">@{{ story.owner.username|lower }}</a></h3>
+    <h5>by <a href="{% url 'profile' story.owner.id %}">@{{ story.owner.username|lower }}</a></h5>
     <div id="map" style="height: 200px;"><a href="https://www.maptiler.com" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a></div>
-    <p>{{ story.body }}</p>
+    <p>{{ story.body | safe}}</p>
     
-
-
-
-    <!--
-    <div id="comments">
-        <h3>Comments</h3>
-        Display comments here
+    <div class="card">
+        <div class="card-header">
+        Comments:
+        </div>
+        <div class="card-body">
+            <div class="card mb-3">
+                {% for comment in story.comments.all %}
+                <div class="card-body">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="{{ comment.author.profile.profile_picture.url }}" alt="Profile picture" class="rounded-circle" style="max-width: 150px; height: 150px;">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                        <p class="card-text">{{ comment.text }}</p>
+                        <p class="card-text"><small class="text-body-secondary">Posted by <a href="{% url 'profile' comment.author.id %}"> @{{ comment.author.username }} </a> on {{ comment.created_date }}</small></p>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                {% endfor %}
+            </div>
+            </p>
+        </div>
     </div>
-    -->
+
+
+    <br/><center>
+    <div class="card">
+        <div class="card-header">
+          Make a comment:
+        </div>
+        <div class="card-body">
+            <p><form method="post">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button class="btn btn-outline-primary float-right" type="submit" style="text-decoration: none; color: inherit;">Add comment</button>
+                </form>                
+            </p>
+        </div>
+    </div></center>
 
 
     {% block scripts %}
