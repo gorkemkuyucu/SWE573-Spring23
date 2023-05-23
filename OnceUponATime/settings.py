@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'OnceUponATime.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'onceuponatimeDB',
+        'NAME': 'onceuponDB',
         'USER': 'postgres',
         'PASSWORD': 'qwerty',
         'HOST':'127.0.0.1',
