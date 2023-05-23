@@ -2,9 +2,10 @@ from django import forms
 from django.contrib.auth.models import User
 from story.models import Story
 
-class MarkedPointForm(forms.Form):
+class MapSearchForm(forms.Form):
     latitude = forms.FloatField()
     longitude = forms.FloatField()
+    radius = forms.FloatField()
 
 class AdvancedSearchForm(forms.Form):
     title = forms.CharField(required=False)

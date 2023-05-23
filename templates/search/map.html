@@ -1,9 +1,16 @@
+{% extends 'base.html' %}
 
-
+{% block content %}
+<h3>Map Search</h3>
+<h6>Please draw a circular area to find stories inside it.</h6>
 <div id="map" style="height: 500px;"><a href="https://www.maptiler.com" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a></div>
-
+<br>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 
 <script>
     const key = 'rbrQycsoiHDtV1Knh3g8';
@@ -18,26 +25,63 @@
         attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
         crossOrigin: true
       }).addTo(map);
-    var marker = L.marker([latitude, longitude]).addTo(map);
-    
-    marker.bindPopup("Latitude: " + latitude + "<br>Longitude: " + longitude);
+    L.Control.geocoder().addTo(map);
 
-    map.on('click', function(e) {
-        marker.setLatLng(e.latlng);
-        document.getElementById('id_latitude').value = e.latlng.lat;
-        document.getElementById('id_longitude').value = e.latlng.lng;
-        
-        marker.setPopupContent("Latitude: " + e.latlng.lat + "<br>Longitude: " + e.latlng.lng);
- 
+    var drawnItems = new L.FeatureGroup();
+    var drawControl = new L.Control.Draw({
+        draw: {
+            polygon: false,
+            polyline: false,
+            rectangle: false,
+            marker: false,
+            circlemarker: false
+        },
+        edit: {
+            featureGroup: drawnItems
+        }
     });
+
+    map.addLayer(drawnItems);
+    map.addControl(drawControl);
+
+    let currentCircle = null; // To store the current drawn circle
+
+    map.on(L.Draw.Event.CREATED, function (e) {
+        var type = e.layerType,
+            layer = e.layer;
+
+        if (type === 'circle') {
+            // If a circle is added even though another one already exists, remove previous one
+            if (currentCircle) {
+                map.removeLayer(currentCircle);
+            }
+
+            currentCircle = layer; // Save the circle
+
+            // Get the circle's center and radius
+            let center = currentCircle.getLatLng();
+            let radius = currentCircle.getRadius();
+
+            // Populate the inputs with the circle's center and radius
+            document.getElementById('id_latitude').value = center.lat;
+            document.getElementById('id_longitude').value = center.lng;
+            document.getElementById('id_radius').value = radius; // Convert to desired units if necessary
+        }
+        drawnItems.addLayer(layer);
+    });
+
+
+
 </script>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">This is my story's place</button>
+    <button type="submit" class="btn btn-outline-primary">Find stories in this area</button>
 </form>
 <style>
     #map {
         position: absolute; top: 0; right: 0; bottom: 0; left: 0; height: 500px;
     }
 </style>
+
+{% endblock %}
