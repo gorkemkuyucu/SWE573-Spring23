@@ -26,6 +26,6 @@ urlpatterns = [
     path('', include("accounts.urls")),
     path('search/', include("search.urls")),
     path('story/', include("story.urls")),
-    path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
+    path('sign_out/', LogoutView.as_view(next_page='home'), name='sign_out'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
