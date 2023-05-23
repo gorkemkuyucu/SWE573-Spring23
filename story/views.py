@@ -111,7 +111,9 @@ def like_story(request, pk):
         if request.user in story.likes.all():
             story.likes.remove(request.user)
             messages.success(request, "You removed your like!")
+            return redirect('read_story', pk)
         else:
             story.likes.add(request.user)
             messages.success(request, "You liked this story!")
+            return redirect('read_story', pk)
     return render(request, 'story/read_story.html', {'story': story})
