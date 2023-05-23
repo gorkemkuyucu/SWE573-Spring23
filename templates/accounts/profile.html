@@ -71,13 +71,13 @@
       <div class="card-body">
           {% for story in stories %}
             {% if story.owner.id == profile.user.id %} 
-              <div class="card mb-3">
+              <div class="card mb-2">
                 <div class="card-body">
                   <h5 class="card-title"><a href="{% url 'read_story' story.id %}">{{ story.title }}</a></h5>
-                  <p class="card-text"><small>In between {{ story.start_date.day }}.{{ story.start_date.month }}.{{ story.start_date.year }} and {{ story.end_date.day }}.{{ story.end_date.month }}.{{ story.end_date.year }}</samll></p>
+                  <p class="card-text">In between {{ story.start_date.day }}.{{ story.start_date.month }}.{{ story.start_date.year }} and {{ story.end_date.day }}.{{ story.end_date.month }}.{{ story.end_date.year }}</p>
                   <p class="card-text"><small class="text-muted"> Published on {{ story.created_date.day }}.{{ story.created_date.month }}.{{ story.created_date.year }}</small></p>
                   {% if user == profile.user %}
-                    <button class="btn btn-outline-primary float-right">
+                    <button class="btn btn-outline-primary btn-sm float-right">
                       <a href="{% url 'edit_story' story.id %}" style="text-decoration: none; color: inherit;">Edit Story</a>
                     </button>
                   {% endif %}

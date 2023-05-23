@@ -2,12 +2,41 @@
 
 {% block content %}
 <div class="col-md-8 offset-md-2">
-<h3>Sign Up</h3> 
+<center><h3>Sign Up</h3></center>
 
 <form method="POST" action="">
     {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" name="Create User" label="Send">
+    <div class="col-md-6 offset-md-3">
+        <label for="first_name" class="form-label">First Name:</label>
+        <input type="text" class="form-control" name="first_name" id="first_name">
+    </div>
+    <div class="col-md-6 offset-md-3">
+        <label for="last_name" class="form-label">Last Name:</label>
+        <input type="last_name" class="form-control" name="last_name" id="last_name">
+    </div>
+    <div class="col-md-6 offset-md-3">
+        <label for="username" class="form-label">Username:</label>
+        <input type="username" class="form-control" name="username" id="username">
+    </div>
+    <div class="col-md-6 offset-md-3">
+        <label for="email" class="form-label">Email:</label>
+        <input type="email" class="form-control" name="email" id="email">
+    </div>
+    <div class="col-md-6 offset-md-3">
+        <label for="password1" class="form-label">Password:</label>
+        <input type="password1" class="form-control" name="password1" id="password1">
+    </div>
+    <div class="col-md-6 offset-md-3">
+        <label for="password2" class="form-label">Password confirmation:</label>
+        <input type="password2" class="form-control" name="password2" id="password2">
+    </div><br/>
+    <div class="col-md-6 offset-md-3">
+        <label for="terms_conditions" class="form-label">{{form.terms_conditions.label}} {{form.terms_conditions}}</label>
+    </div>
+    <br/>
+    <div class="col-md-6 offset-md-3">
+        <input type="submit" class="btn btn-outline-primary" name="Create User" value="Create">
+    </div>
 
 </form>
 </div>
