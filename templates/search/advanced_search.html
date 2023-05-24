@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+<center>
+<h3>Advanced Search</h3>
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Advanced Search</button>
+    <button class="btn btn-outline-primary" type="submit">Advanced Search</button>
 </form>
-
+<br>
+<a class="btn btn-outline-primary" href="{% url 'map' %}">I want to search by location</a>
+</center>
 {% endblock %}
