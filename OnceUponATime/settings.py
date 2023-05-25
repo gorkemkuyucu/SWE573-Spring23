@@ -12,17 +12,25 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+import platform
+import environ
 from dotenv import load_dotenv
 
-# 
-load_dotenv() 
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal306'
-GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
 CKEDITOR_UPLOAD_PATH = "media/uploads/"
 
+if platform.system() == 'Windows':
+    GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal306'
+    GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
+elif platform.system() == 'Linux':
+    pass
+
+environ.Env.read_env(env_file=' .env')
+ 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -30,10 +38,9 @@ CKEDITOR_UPLOAD_PATH = "media/uploads/"
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
 # Application definition
 
@@ -93,11 +100,11 @@ WSGI_APPLICATION = 'OnceUponATime.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'onceuponDB',
-        'USER': 'postgres',
-        'PASSWORD': 'qwerty',
-        'HOST':'127.0.0.1',
-        'PORT':'5432',
+        'NAME': os.getenv('POSTGRES_DBNAME'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASS'),
+        'HOST': os.getenv('PG_HOST'),
+        'PORT': os.getenv('PG_PORT'),
 
     }
 }
