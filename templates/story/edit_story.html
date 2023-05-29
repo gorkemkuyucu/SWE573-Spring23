@@ -10,7 +10,7 @@
         {{ form.media }}
         <p><label for="title" class="col-sm-1 col-form-label">Title:</label> {{ form.title }}</p>
         <div class="form-group">
-            <label for="id_locations" class="col-sm-1 col-form-label">Locations:</label>
+            <label for="id_locations" class="col-sm-1 col-form-label">Locations (please note that new locations will be saved and old ones will be removed):</label>
             <div id="map" style="height: 600px; width: 800px;"><a href="https://www.maptiler.com" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a></div>
             <select id="id_locations" name="locations" multiple style="display: none;"></select>
             <input type="hidden" id="story_locations" name="story_locations">

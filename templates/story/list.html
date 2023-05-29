@@ -3,22 +3,32 @@
 {% block content %}
 <h3>Story List</h3>
 <div class="container">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="story-info">
-
-            {% for story in stories %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                    <h5 class="card-title"><a href="{% url 'read_story' story.id %}">{{ story.title }}</a></h5>
-                    Tags:
-                    {% for tag in story.tags.all %}
-                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                    <p class="card-text">In between {{ story.start_date.day }}/{{ story.start_date.month }}/{{ story.start_date.year }} and {{ story.end_date.day }}/{{ story.end_date.month }}/{{ story.end_date.year }}</p>
-                    <p class="card-text"><small class="text-muted"> Created at {{ story.created_date.day }}/{{ story.created_date.month }}/{{ story.created_date.year }}</small></p>
-                    </div>
-                </div>
-            {% endfor %}
-
+  <div class="row">
+    <div class="col-md-8">
+      <div class="story-info">
+        {% for story in stories %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title"><a href="{% url 'read_story' story.id %}">{{ story.title }}</a></h5>
+              <p class="card-text">{{ story.body|truncatechars:100|safe }}</p>
+              <p class="card-text">Date Resolution: {{ story.get_date_resolution_display }}</p>
+              {% if story.date_resolution == 'interval' %}
+                <p class="card-text">In between {{ story.interval_start|date:"d/m/Y" }} and {{ story.interval_end|date:"d/m/Y" }}</p>
+              {% elif story.date_resolution == 'month' %}
+                <p class="card-text">Month: {{ story.month }}</p>
+              {% elif story.date_resolution == 'year' %}
+                <p class="card-text">Year: {{ story.year }}</p>
+              {% elif story.date_resolution == 'season' %}
+                <p class="card-text">Season: {{ story.get_season_display }}</p>
+              {% elif story.date_resolution == 'decade' %}
+                <p class="card-text">Decade: {{ story.decade }}</p>
+              {% endif %}
+              <p class="card-text"><small class="text-muted"> Created at {{ story.created_date|date:"d/m/Y" }}</small></p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
