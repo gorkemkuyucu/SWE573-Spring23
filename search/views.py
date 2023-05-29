@@ -2,19 +2,15 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.gis.geos import Point
 from .forms import MapSearchForm
-from .models import MarkedPoint
-from story.models import Story, Location
-from django.db.models import Q, F, Func
+from story.models import Story
+from django.db.models import Q
 from .forms import AdvancedSearchForm
-from django.contrib.auth.models import User
 from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.geos import GEOSGeometry
-import json
-from django.http import JsonResponse
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.db.models.functions import math
+import datetime
 
 # Create your views here.
 
@@ -77,6 +73,7 @@ def basic_search(request):
         stories = Story.objects.filter(
             Q(title__icontains=query) |
             Q(body__icontains=query) |
+            Q(tags__name=query) |
             Q(owner__username__icontains=query)
         )
 
@@ -92,6 +89,11 @@ def advanced_search(request):
             author = form.cleaned_data.get('author')
             tags = form.cleaned_data.get('tags')
             date = form.cleaned_data.get('date')
+            month = form.cleaned_data.get('month')
+            year = form.cleaned_data.get('year')
+            decade = form.cleaned_data.get('decade')
+            season = form.cleaned_data.get('season')
+            query = ""
             
             # Filter the Story objects
             stories = Story.objects.all()
@@ -107,9 +109,31 @@ def advanced_search(request):
             if tags:
                 stories = stories.filter(tags__name__in=tags.split())
                 query=tags
+            if season:
+                stories = stories.filter(season=season)
+                query = season
             if date:
-                stories = stories.filter(created_date__date=date)
-                query=date
+                stories = stories.filter(
+                    Q(single_date=date) |
+                    (Q(interval_start__lte=date) & Q(interval_end__gte=date))
+                )
+                query = f"Date: {date}"
+            if month:
+                stories = stories.filter(month=month)
+                query = f"Month: {month}"
+            if year:
+                stories = stories.filter(year=year)
+                query = year
+            if decade:
+                decade_start = decade
+                decade_end = decade + 9
+                stories = stories.filter(
+                    Q(decade__icontains=decade_start) |
+                    (Q(date__year__gte=decade_start) & Q(date__year__lte=decade_end)) |
+                    (Q(interval_start__year__lte=decade_end) & Q(interval_end__year__gte=decade_start))
+                )
+                query = decade
+
 
             return render(request, 'search/results.html', {'stories': stories,'query': query})
     else:

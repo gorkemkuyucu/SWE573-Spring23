@@ -1,6 +1,14 @@
 from django import forms
 from django.contrib.auth.models import User
-from story.models import Story
+from story.models import Story, Season
+
+SEASON_CHOISES = [    
+    (None, '-'),
+    (Season.WINTER.value, 'Winter'),
+    (Season.SPRING.value, 'Spring'),
+    (Season.SUMMER.value, 'Summer'),
+    (Season.AUTUMN.value, 'Autumn'),
+    ]
 
 class MapSearchForm(forms.Form):
     latitude = forms.FloatField()
@@ -12,4 +20,5 @@ class AdvancedSearchForm(forms.Form):
     body = forms.CharField(required=False)
     author = forms.CharField(required=False)
     tags = forms.CharField(required=False)
-    date = forms.DateField(required=False)
+    created_date = forms.DateField(required=False)
+    season = forms.ChoiceField(required=False, choices=SEASON_CHOISES)

@@ -7,35 +7,158 @@
     <form method="Post" id="story-form">
         {% csrf_token %}
         {{ story_form.media }}
-        {{ story_form.as_p }}
+        <!--{{ story_form.as_p }}-->
+        <p><label for="title" class="col-sm-1 col-form-label">Title:</label> {{ story_form.title }}</p>
+        <div class="form-group">
+            <label for="id_locations" class="col-sm-1 col-form-label">Locations:</label>
+            <div id="map" style="height: 600px; width: 800px;"><a href="https://www.maptiler.com" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a></div>
+            <select id="id_locations" name="locations" multiple style="display: none;"></select>
+            <input type="hidden" id="story_locations" name="story_locations">
+            <br>
+            <button type="button" id="addLocation" class="btn btn-outline-primary">This is my story's location</button>
+            <button type="button" id="removeLocation" class="btn btn-outline-danger">Remove last location</button>
+        </div><br>
+        <p>Here is my story: {{ story_form.body }}</p>
+        
+        <select class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="date-resolution" name="date_resolution" onchange="dateTypeCheck()"><br>
+            <option value="single_date">Single Date</option>
+            <option value="interval">Interval</option>
+            <option value="month">Month</option>
+            <option value="year">Year</option>
+            <option value="season">Season</option>
+            <option value="decade">Decade</option>
+        </select>
+
+        <section class="container">
+
+                <div id="ifSingleDate" style="display: none;">
+                    <div class="row form-group">
+                        <p><label for="date" class="col-sm-3 col-form-label">Single Date:</label>
+                        <div class="col-sm-4">
+                            <div class="input-group date" id="single_date" name="single_date">
+                                <input type="text" class="form-control" name="single_date">
+                                <span class="input-group-append">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div></p>
+                    </div>
+                </div>
+
+                <div id="ifInterval" style="display: none;">
+                    <div class="row form-group">
+                        <p><label for="date" class="col-sm-3 col-form-label">Interval between:</label>
+                        <div class="col-sm-4">
+                            <div class="input-group date" id="interval_start" name="interval_start">
+                                <input type="text" class="form-control" name="interval_start">
+                                <span class="input-group-append">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div></p>
+                        <p><label for="date" class="col-sm-3 col-form-label">and</label>
+                        <div class="col-sm-4">
+                            <div class="input-group date" id="interval_end" name="interval_end">
+                                <input type="text" class="form-control" name="interval_end">
+                                <span class="input-group-append">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div></p>
+                    </div>
+                </div>
+
+                <div id="ifMonth" style="display: none;" class="input-group date datepicker" data-date-format="mm/yyyy">
+                    <div class="row form-group">
+                        <p><label for="date" class="col-sm-3 col-form-label">Month:</label>
+                        <div class="col-sm-4">
+                            <div class="input-group date" id="datepicker-month" name="month">
+                                <input type="text" class="form-control" name="month">
+                                <span class="input-group-append">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div></p>
+                    </div>
+                </div>
+
+                <div id="ifYear" style="display: none;" class="input-group date datepicker" data-date-format="mm/yyyy">
+                    <div class="row form-group">
+                        <p><label for="date" class="col-sm-3 col-form-label">Year:</label>
+                        <div class="col-sm-4">
+                            <div class="input-group date" id="datepicker-year" name="year">
+                                <input type="text" class="form-control" name="year">
+                                <span class="input-group-append">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div></p>
+                    </div>
+                </div>
+
+                <div id="ifSeason" style="display: none;">
+                    <div class="row form-group">
+                        <p><label for="season" class="col-sm-3 col-form-label">Season:</label> {{ story_form.season }}</p>
+                    </div>
+                </div>
+
+                <div id="ifDecade" style="display: none;" class="input-group date datepicker" data-date-format="mm/yyyy">
+                    <div class="row form-group">
+                        <p><label for="date" class="col-sm-3 col-form-label">Decade:</label>
+                        <div class="col-sm-4">
+                            <div class="input-group date" id="datepicker-decade" name="decade">
+                                <input type="text" class="form-control" name="decade">
+                                <span class="input-group-append">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div></p>
+                    </div>
+                </div>            
+        </section>
+
+
 
         <div class="form-group">
-            <label for="tags">Tags:</label>
+            <label for="tags"  class="col-sm-3 col-form-label">Tags:</label>
             <input type="text" id="new-tag" class="form-control">
             <br>
-            <button type="button" id="add-tag" class="btn btn-primary">Add Tag</button>
+            <button type="button" id="add-tag" class="btn btn-outline-primary">Add Tag</button>
         </div>
         <input type="hidden" name="tags" id="tags">
         <ul id="tag-list">
             <!-- Tags will be added dynamically here with JavaScript -->
         </ul>
+        
+        <p>I'm not finished this story yet (save as draft): {{ story_form.is_draft }}</p>
 
-        <div class="form-group">
-          <label for="id_locations">Locations:</label>
-          <div id="map" style="height: 400px;"><a href="https://www.maptiler.com" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a></div>
-          <select id="id_locations" name="locations" multiple style="display: none;"></select>
-          <input type="hidden" id="story_locations" name="story_locations">
-          <br>
-          <button type="button" id="addLocation" class="btn btn-primary">This is my story's location</button>
-          <button type="button" id="removeLocation" class="btn btn-danger">Remove last location</button>
-        </div><br>
-        <button type="submit" class="btn btn-primary">Create Story</button>
+        <button type="submit" class="btn btn-outline-primary">Create Story</button>
     </form>
       
     {% block scripts %}
-    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+        <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
         <script>
             const key = 'rbrQycsoiHDtV1Knh3g8';
             var latitude = 41.085137428988375;
@@ -51,6 +174,7 @@
                 attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
                 crossOrigin: true
             }).addTo(map);
+            L.Control.geocoder().addTo(map);
 
             var story_locations = [];
             var tempMarker = null;
@@ -99,6 +223,7 @@
         </script>
 
         <script type="text/javascript">
+            // Tag Script
             // Add event listener for addTag button
             document.getElementById('add-tag').addEventListener('click', function() {
             var newTag = document.getElementById('new-tag').value;
@@ -108,7 +233,7 @@
                 newListItem.textContent = newTag;
                 var removeButton = document.createElement('button');
                 removeButton.textContent = 'Remove';
-                removeButton.classList.add('btn', 'btn-danger', 'btn-sm'); // Add classes here
+                removeButton.classList.add('btn', 'btn-outline-danger', 'btn-sm'); // Add classes here
                 removeButton.addEventListener('click', function() {
                     tagList.removeChild(newListItem);
                     updateTagField();
@@ -118,7 +243,7 @@
                 updateTagField();
             }
             document.getElementById('new-tag').value = '';
-        });
+            });
 
         function updateTagField() {
             var tags = Array.from(document.getElementById('tag-list').children).map(function(li) {
@@ -126,6 +251,94 @@
             }).join(',');
             document.getElementById('tags').value = tags;
         }
+
+        </script>
+
+        <script type="text/javascript">
+        $(function() {
+            $('#single_date').datepicker({
+                format: "dd/mm/yyyy",
+                clearBtn: true});
+        });
+
+        $(function() {
+            $('#interval_start').datepicker({
+                format: "dd/mm/yyyy",
+                clearBtn: true});
+        });
+
+        $(function() {
+            $('#interval_end').datepicker({
+                format: "dd/mm/yyyy",
+                clearBtn: true});
+        });
+
+        $(function() {
+            $('#datepicker-month').datepicker({
+                format: "mm",
+                startView: 1,
+                minViewMode: 1,
+                maxViewMode: 1,
+                clearBtn: true});
+        });
+
+        $(function() {
+            $('#datepicker-year').datepicker({
+                format: "yy",
+                startView: 2,
+                minViewMode: 2,
+                maxViewMode: 2,
+                clearBtn: true});
+        });
+
+        $(function() {
+            $('#datepicker-decade').datepicker({
+                format: "yyyy",
+                startView: 3,
+                minViewMode: 3,
+                maxViewMode: 3,
+                clearBtn: true});
+        });
+
+
+        // Date Resolution Script
+        // Will run once the entire page is loaded
+        window.onload = function() {
+            // Attach change event to date_resolution dropdown
+            document.getElementById('date-resolution').addEventListener('change', function() {
+                dateTypeCheck(this);
+            });
+
+            // Trigger change event on page load to set initial state
+            document.getElementById('date-resolution').dispatchEvent(new Event('change'));
+        }
+
+        function dateTypeCheck(that) {
+            // First, hide all date sections
+            document.getElementById("ifSingleDate").style.display = "none";
+            document.getElementById("ifInterval").style.display = "none";
+            document.getElementById("ifMonth").style.display = "none";
+            document.getElementById("ifYear").style.display = "none";
+            document.getElementById("ifSeason").style.display = "none";
+            document.getElementById("ifDecade").style.display = "none";
+
+            // Then, show the one with the selected option
+            if (that.value == "single_date") {
+                document.getElementById("ifSingleDate").style.display = "block";
+            } else if (that.value == "interval") {
+                document.getElementById("ifInterval").style.display = "block";
+            } else if (that.value == "month") {
+                document.getElementById("ifMonth").style.display = "block";
+            } else if (that.value == "year") {
+                document.getElementById("ifYear").style.display = "block";
+            } else if (that.value == "season") {
+                document.getElementById("ifSeason").style.display = "block";
+            } else if (that.value == "decade") {
+                document.getElementById("ifDecade").style.display = "block";
+            }
+        }
+
+
 
         </script>
       {% endblock %}

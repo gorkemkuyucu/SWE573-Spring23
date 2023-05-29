@@ -96,10 +96,10 @@
 
             // Creating array for locations
             var storyLocations = [
-                {% for location in locations %}
+                {% for location in story.geolocations.all %}
                     {
-                        lat: {{ location.geolocation_lat }},
-                        lon: {{ location.geolocation_lon }}
+                        lat: {{ location.geolocation.y }},
+                        lon: {{ location.geolocation.x }}
                     },
                 {% endfor %}
             ];
