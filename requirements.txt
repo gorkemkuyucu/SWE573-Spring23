@@ -1,0 +1,9 @@
+Django>=4.1.7,<4.2
+psycopg2>=2.9.6,<2.10
+pillow
+django-taggit
+django-ckeditor
+geopy
+psycopg2-binary
+django-environ
+python-dotenv
