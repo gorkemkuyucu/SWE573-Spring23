@@ -14,6 +14,11 @@
             Like
         {% endif %}
     </a></button>
+    {% else %}
+    <form method="POST" action="{% url 'delete_story' story.id %}" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete Story</button>
+    </form>
     {% endif %}
     <p>{{ story.likes.count }} likes</p>
     Tags:
@@ -34,6 +39,12 @@
                 {% for comment in story.comments.all %}
                 <div class="card-body">
                 <div class="row g-0">
+                    {% if request.user == comment.author %}
+                        <form method="POST" action="{% url 'delete_comment' comment.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger float-right">Delete Comment</button>
+                        </form>
+                    {% endif %}
                     <div class="col-md-4">
                         <img src="{{ comment.author.profile.profile_picture.url }}" alt="Profile picture" class="rounded-circle" style="max-width: 150px; height: 150px;">
                     </div>

@@ -125,7 +125,6 @@ def read_story(request, story_id):
 
     return render(request, 'story/read_story.html', {'story': story, 'locations': locations, 'comment_form': comment_form, 'profile':profile})
 
-@login_required(login_url='signInPage') 
 @login_required(login_url='signInPage')
 def edit_story(request, story_id):
     story = get_object_or_404(Story, id=story_id)
@@ -229,3 +228,33 @@ def like_story(request, pk):
             messages.success(request, "You liked this story!")
             return redirect('read_story', pk)
     return render(request, 'story/read_story.html', {'story': story})
+
+@login_required(login_url='signInPage')
+def delete_story(request, story_id):
+    story = get_object_or_404(Story, id=story_id)
+
+    if request.user != story.owner:
+        messages.error(request, "You don't have permission to delete this story.")
+        return redirect('profile', pk=request.user.id)
+
+    if request.method == 'POST':
+        story.delete()
+        messages.success(request, 'The story has been deleted successfully!')
+        return redirect('profile', pk=request.user.id)
+
+    return render(request, 'story/list.html', {'story': story})
+
+@login_required(login_url='signInPage')
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if request.user != comment.author:
+        messages.error(request, "You don't have permission to delete this comment.")
+        return redirect('read_story', story_id=comment.story.id)
+
+    if request.method == 'POST':
+        comment.delete()
+        messages.success(request, 'The comment has been deleted successfully!')
+        return redirect('read_story', story_id=comment.story.id)
+
+    return render(request, 'story/read_story.html', {'comment': comment})
