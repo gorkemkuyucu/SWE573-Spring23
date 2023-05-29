@@ -21,7 +21,11 @@ def signUpPage(request):
             user = form.save(commit=False)
             user.terms_conditions = form.cleaned_data['terms_conditions']
             user.save()
-            return redirect('verification') #if the form is valid, user is redirected to the verification html page
+            messages.success(request, "Your account has been created successfully!")
+            return redirect('home') #if the form is valid, user is redirected to the verification html page
+        else:
+            messages.error(request, "The form is not valid!")
+            return redirect('signInPage')
     else:
         form = SignUpForm()
 
