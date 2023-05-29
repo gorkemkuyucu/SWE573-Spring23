@@ -1,14 +1,173 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<center>
-<h3>Advanced Search</h3>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-outline-primary" type="submit">Advanced Search</button>
-</form>
-<br>
-<a class="btn btn-outline-primary" href="{% url 'map' %}">I want to search by location</a>
-</center>
+    <center>
+    <h3>Advanced Search</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <p>Title: {{ form.title }}</p>
+        <p>Body: {{ form.body }}</p>
+        <p>Author: {{ form.author }}</p>
+        <p>Tags: {{ form.tags }}</p>
+        
+
+        <p><select class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="date-resolution" name="date_resolution" onchange="dateTypeCheck()"><br>
+            <option value="date">Exact Date</option>
+            <option value="month">Month</option>
+            <option value="year">Year</option>
+            <option value="season">Season</option>
+            <option value="decade">Decade</option>
+        </select></p>
+        
+        <section class="container">
+            <div id="ifDate" style="display: none;">
+                <p><label for="date" class="col-sm-3 col-form-label">Date:</label>
+                    <div class="col-sm-2">
+                        <div class="input-group date" id="date" name="date">
+                            <input type="text" class="form-control" name="date">
+                            <span class="input-group-append">
+                                <span class="input-group-text bg-white">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </span>
+                    </div>
+                </div></p>
+            </div>
+
+            <div id="ifMonth" style="display: none;" class="input-group date datepicker">
+                    <p><label for="date" class="col-sm-3 col-form-label">Month:</label>
+                    <div class="col-sm-2">
+                        <div class="input-group date" id="datepicker-month" name="month">
+                            <input type="text" class="form-control" name="month">
+                            <span class="input-group-append">
+                                <span class="input-group-text bg-white">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div></p>
+            </div>
+
+            <div id="ifYear" style="display: none;" class="input-group date datepicker" data-date-format="mm/yyyy">
+                    <p><label for="date" class="col-sm-3 col-form-label">Year:</label>
+                    <div class="col-sm-2">
+                        <div class="input-group date" id="datepicker-year" name="year">
+                            <input type="text" class="form-control" name="year">
+                            <span class="input-group-append">
+                                <span class="input-group-text bg-white">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div></p>
+            </div>
+
+            <div id="ifSeason" style="display: none;">
+                <p><label for="season" class="col-sm-1 col-form-label">Season:</label> {{ form.season }}</p>
+            </div>
+
+            <div id="ifDecade" style="display: none;" class="input-group date datepicker" data-date-format="mm/yyyy">
+                    <p><label for="date" class="col-sm-3 col-form-label">Decade:</label>
+                    <div class="col-sm-2">
+                        <div class="input-group date" id="datepicker-decade" name="decade">
+                            <input type="text" class="form-control" name="decade">
+                            <span class="input-group-append">
+                                <span class="input-group-text bg-white">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div></p>
+            </div>            
+        </section>
+
+        <button class="btn btn-outline-primary" type="submit">Advanced Search</button>
+    </form>
+    <br>
+    <a class="btn btn-outline-primary" href="{% url 'map' %}">I want to search by location</a>
+    </center>
+
+    {% block scripts %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(function() {
+            $('#created_date').datepicker({
+                format: "dd/mm/yyyy",
+                clearBtn: true});
+        });
+
+        $(function() {
+            $('#date').datepicker({
+                format: "dd/mm/yyyy",
+                clearBtn: true});
+        });
+
+        $(function() {
+            $('#datepicker-month').datepicker({
+                format: "mm",
+                startView: 1,
+                minViewMode: 1,
+                maxViewMode: 1,
+                clearBtn: true});
+        });
+
+        $(function() {
+            $('#datepicker-year').datepicker({
+                format: "yy",
+                startView: 2,
+                minViewMode: 2,
+                maxViewMode: 2,
+                clearBtn: true});
+        });
+
+        $(function() {
+            $('#datepicker-decade').datepicker({
+                format: "yyyy",
+                startView: 3,
+                minViewMode: 3,
+                maxViewMode: 3,
+                clearBtn: true});
+        });
+
+
+        // Date Resolution Script
+        // Will run once the entire page is loaded
+        window.onload = function() {
+            // Attach change event to date_resolution dropdown
+            document.getElementById('date-resolution').addEventListener('change', function() {
+                dateTypeCheck(this);
+            });
+
+            // Trigger change event on page load to set initial state
+            document.getElementById('date-resolution').dispatchEvent(new Event('change'));
+        }
+
+        function dateTypeCheck(that) {
+            // First, hide all date sections
+            document.getElementById("ifDate").style.display = "none";
+            document.getElementById("ifMonth").style.display = "none";
+            document.getElementById("ifYear").style.display = "none";
+            document.getElementById("ifSeason").style.display = "none";
+            document.getElementById("ifDecade").style.display = "none";
+
+            // Then, show the one with the selected option
+            if (that.value == "date") {
+                document.getElementById("ifDate").style.display = "block";
+            } else if (that.value == "month") {
+                document.getElementById("ifMonth").style.display = "block";
+            } else if (that.value == "year") {
+                document.getElementById("ifYear").style.display = "block";
+            } else if (that.value == "season") {
+                document.getElementById("ifSeason").style.display = "block";
+            } else if (that.value == "decade") {
+                document.getElementById("ifDecade").style.display = "block";
+            }
+        }
+        </script>
+    {% endblock %}
 {% endblock %}
